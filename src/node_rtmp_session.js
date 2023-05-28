@@ -239,8 +239,8 @@ class NodeRtmpSession {
 
   /**
    * onSocketData
-   * @param {Buffer} data 
-   * @returns 
+   * @param {Buffer} data
+   * @returns
    */
   onSocketData(data) {
     let bytes = data.length;
@@ -329,8 +329,8 @@ class NodeRtmpSession {
 
   /**
    * rtmpChunksCreate
-   * @param {RtmpPacket} packet 
-   * @returns 
+   * @param {RtmpPacket} packet
+   * @returns
    */
   rtmpChunksCreate(packet) {
     let header = packet.header;
@@ -390,9 +390,9 @@ class NodeRtmpSession {
 
   /**
    * rtmpChunkRead
-   * @param {Buffer} data 
-   * @param {Number} p 
-   * @param {Number} bytes 
+   * @param {Buffer} data
+   * @param {Number} p
+   * @param {Number} bytes
    */
   rtmpChunkRead(data, p, bytes) {
     // Logger.log('rtmpChunkRead', p, bytes);
@@ -615,7 +615,7 @@ class NodeRtmpSession {
       this.audioChannels = ++sound_type;
 
       if (sound_format == 4) {
-        //Nellymoser 16 kHz 
+        //Nellymoser 16 kHz
         this.audioSamplerate = 16000;
       } else if (sound_format == 5 || sound_format == 7 || sound_format == 8) {
         //Nellymoser 8 kHz | G.711 A-law | G.711 mu-law

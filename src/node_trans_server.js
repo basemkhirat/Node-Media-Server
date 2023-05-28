@@ -19,13 +19,13 @@ class NodeTransServer {
   }
 
   async run() {
-    try {
-      mkdirp.sync(this.config.http.mediaroot);
-      fs.accessSync(this.config.http.mediaroot, fs.constants.W_OK);
-    } catch (error) {
-      Logger.error(`Node Media Trans Server startup failed. MediaRoot:${this.config.http.mediaroot} cannot be written.`);
-      return;
-    }
+    // try {
+    //   mkdirp.sync(this.config.http.root);
+    //   fs.accessSync(this.config.http.root, fs.constants.W_OK);
+    // } catch (error) {
+    //   Logger.error(`Node Media Trans Server startup failed. root:${this.config.root} cannot be written.`);
+    //   return;
+    // }
 
     try {
       fs.accessSync(this.config.trans.ffmpeg, fs.constants.X_OK);
@@ -49,7 +49,7 @@ class NodeTransServer {
     }
     context.nodeEvent.on('postPublish', this.onPostPublish.bind(this));
     context.nodeEvent.on('donePublish', this.onDonePublish.bind(this));
-    Logger.log(`Node Media Trans Server started for apps: [ ${apps}] , MediaRoot: ${this.config.http.mediaroot}, ffmpeg version: ${version}`);
+    Logger.log(`Node Media Trans Server started for apps: [ ${apps}] , root: ${this.config.root}, ffmpeg version: ${version}`);
   }
 
   onPostPublish(id, streamPath, args) {
@@ -59,12 +59,19 @@ class NodeTransServer {
     while (i--) {
       let conf = { ...this.config.trans.tasks[i] };
       conf.ffmpeg = this.config.trans.ffmpeg;
-      conf.mediaroot = this.config.http.mediaroot;
+      conf.root = this.config.root;
       conf.rtmpPort = this.config.rtmp.port;
       conf.streamPath = streamPath;
       conf.streamApp = app;
       conf.streamName = name;
       conf.args = args;
+
+      let parentApp = conf.parentApp;
+      if( parentApp) {
+        conf.streamPath = "/" + parentApp + "/" + name;
+        conf.streamApp = parentApp;
+      }
+
       if (app === conf.app) {
         let session = new NodeTransSession(conf);
         this.transSessions.set(id, session);

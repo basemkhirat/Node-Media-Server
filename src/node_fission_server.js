@@ -20,10 +20,10 @@ class NodeFissionServer {
 
   async run() {
     try {
-      mkdirp.sync(this.config.http.mediaroot);
-      fs.accessSync(this.config.http.mediaroot, fs.constants.W_OK);
+      mkdirp.sync(this.config.root);
+      fs.accessSync(this.config.root, fs.constants.W_OK);
     } catch (error) {
-      Logger.error(`Node Media Fission Server startup failed. MediaRoot:${this.config.http.mediaroot} cannot be written.`);
+      Logger.error(`Node Media Fission Server startup failed. root:${this.config.root} cannot be written.`);
       return;
     }
 
@@ -43,7 +43,7 @@ class NodeFissionServer {
 
     context.nodeEvent.on('postPublish', this.onPostPublish.bind(this));
     context.nodeEvent.on('donePublish', this.onDonePublish.bind(this));
-    Logger.log(`Node Media Fission Server started, MediaRoot: ${this.config.http.mediaroot}, ffmpeg version: ${version}`);
+    Logger.log(`Node Media Fission Server started, root: ${this.config.root}, ffmpeg version: ${version}`);
   }
 
   onPostPublish(id, streamPath, args) {
@@ -59,7 +59,7 @@ class NodeFissionServer {
         }
         let conf = task;
         conf.ffmpeg = this.config.fission.ffmpeg;
-        conf.mediaroot = this.config.http.mediaroot;
+        conf.root = this.config.root;
         conf.rtmpPort = this.config.rtmp.port;
         conf.streamPath = streamPath;
         conf.streamApp = app;

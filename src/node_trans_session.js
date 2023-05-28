@@ -31,7 +31,7 @@ class NodeTransSession extends EventEmitter {
     let vc = this.conf.vc || 'copy';
     let ac = this.conf.ac || 'copy';
     let inPath = 'rtmp://127.0.0.1:' + this.conf.rtmpPort + this.conf.streamPath;
-    let ouPath = `${this.conf.mediaroot}/${this.conf.streamApp}/${this.conf.streamName}`;
+    let ouPath = `${this.conf.root}/${this.conf.streamApp}/${this.conf.streamName}`;
     let mapStr = '';
 
     if (this.conf.rtmp && this.conf.rtmpApp) {
@@ -52,7 +52,8 @@ class NodeTransSession extends EventEmitter {
     }
     if (this.conf.hls) {
       this.conf.hlsFlags = this.getConfig('hlsFlags') || '';
-      let hlsFileName = 'index.m3u8';
+      let hlsFileName = this.getConfig('hlsFileName') || 'index.m3u8';
+
       let mapHls = `${this.conf.hlsFlags}${ouPath}/${hlsFileName}|`;
       mapStr += mapHls;
       Logger.log('[Transmuxing HLS] ' + this.conf.streamPath + ' to ' + ouPath + '/' + hlsFileName);
@@ -72,7 +73,7 @@ class NodeTransSession extends EventEmitter {
     Array.prototype.push.apply(argv, this.conf.acParam);
     Array.prototype.push.apply(argv, ['-f', 'tee', '-map', '0:a?', '-map', '0:v?', mapStr]);
     argv = argv.filter((n) => { return n; }); //去空
-    
+
     this.ffmpeg_exec = spawn(this.conf.ffmpeg, argv);
     this.ffmpeg_exec.on('error', (e) => {
       Logger.ffdebug(e);
